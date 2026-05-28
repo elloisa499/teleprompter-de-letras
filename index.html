@@ -7,101 +7,140 @@
     
     <!-- Ícone da aba do navegador (Favicon) usando um Emoji de microfone em SVG -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎤</text></svg>">
+    
+    <!-- Fonte amigável e moderna do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* ========================================================
-           1. CORES E ESTILOS GERAIS (Fácil de mudar!)
-           Aqui você pode mudar as cores do aplicativo. 
+           1. CORES E ESTILOS GERAIS (Novo Visual Vibrante!)
            ========================================================
         */
         :root {
-            --cor-fundo: #f0fdf4;       /* Verde bem clarinho para a tela inicial */
-            --cor-texto: #1e293b;       /* Cor do texto principal */
-            --cor-botao-play: #22c55e;  /* Verde para o botão iniciar */
-            --cor-botao-pause: #eab308; /* Amarelo para pausar */
-            --cor-botao-parar: #ef4444; /* Vermelho para parar/voltar */
+            /* Cores vibrantes para a tela inicial (Gradiente) */
+            --cor-fundo-1: #6366f1; /* Indigo */
+            --cor-fundo-2: #a855f7; /* Roxo */
+            --cor-fundo-3: #ec4899; /* Rosa */
             
-            /* Cores da tela de rolagem (Teleprompter) */
-            --cor-fundo-prompter: #000000; /* Fundo preto para não ofuscar a visão */
-            --cor-texto-prompter: #ffffff; /* Texto branco para dar contraste */
+            --cor-texto: #ffffff;
+            
+            /* Botões com gradientes */
+            --cor-botao-play: linear-gradient(135deg, #10b981, #059669);
+            --cor-botao-pause: linear-gradient(135deg, #f59e0b, #d97706);
+            --cor-botao-parar: linear-gradient(135deg, #ef4444, #b91c1c);
+            
+            /* Cores do Teleprompter (Fundo verde mais visível) */
+            --cor-fundo-prompter-1: #bbf7d0; /* Verde claro bem definido */
+            --cor-fundo-prompter-2: #86efac; /* Verde um pouco mais intenso para o gradiente */
+            --cor-texto-prompter: #0f172a;   /* Texto escuro para facilitar a leitura */
         }
 
-        /* Configuração básica da página */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
+            font-family: 'Nunito', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            /* Fundo animado super legal na tela inicial */
+            background: linear-gradient(-45deg, var(--cor-fundo-1), var(--cor-fundo-2), var(--cor-fundo-3));
+            background-size: 400% 400%;
+            animation: gradienteAnimado 15s ease infinite;
+            color: var(--cor-texto);
+        }
+
+        @keyframes gradienteAnimado {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* ========================================================
-           2. TELA DE CONFIGURAÇÃO (Onde você cola a letra)
+           2. TELA DE CONFIGURAÇÃO (Efeito de Vidro - Glassmorphism)
            ========================================================
         */
         #tela-configuracao {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto; /* Centraliza na tela */
-            width: 100%;
-            box-sizing: border-box;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
             flex-grow: 1;
         }
 
-        h1 {
+        .cartao-configuracao {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
             text-align: center;
-            color: var(--cor-texto);
-            font-size: 2rem;
-            margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
-        /* Caixa de texto para digitar a letra */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Caixa de texto moderna */
         textarea {
             width: 100%;
-            height: 40vh;
-            padding: 15px;
-            font-size: 1.1rem;
-            border: 2px solid #cbd5e1;
-            border-radius: 12px;
+            height: 35vh;
+            padding: 20px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e293b;
+            border: none;
+            border-radius: 16px;
             resize: vertical;
             box-sizing: border-box;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-family: inherit;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Botão grande e bonito para iniciar */
+        textarea:focus {
+            outline: 3px solid #f472b6;
+        }
+
+        /* Botão Iniciar com efeito */
         .btn-iniciar {
-            background-color: var(--cor-botao-play);
+            background: var(--cor-botao-play);
             color: white;
             font-size: 1.5rem;
-            font-weight: bold;
-            padding: 15px 30px;
+            font-weight: 900;
+            padding: 15px 40px;
             border: none;
-            border-radius: 12px;
+            border-radius: 50px; /* Arredondado estilo pílula */
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-iniciar:hover {
-            background-color: #16a34a; /* Verde mais escuro ao passar o mouse */
-            transform: translateY(-2px); /* Efeito de levitar */
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
         }
 
         /* ========================================================
-           3. TELA DO TELEPROMPTER (Onde a mágica acontece)
+           3. TELA DO TELEPROMPTER
            ========================================================
         */
         #tela-prompter {
-            display: none; /* Escondido por padrão, aparece quando clica em Iniciar */
-            background-color: var(--cor-fundo-prompter);
+            display: none;
+            background: linear-gradient(135deg, var(--cor-fundo-prompter-1), var(--cor-fundo-prompter-2));
             color: var(--cor-texto-prompter);
-            position: fixed; /* Ocupa a tela toda */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
@@ -109,74 +148,109 @@
             flex-direction: column;
         }
 
-        /* Área onde o texto realmente rola */
         #area-texto {
             flex-grow: 1;
-            overflow-y: hidden; /* Esconde a barra de rolagem padrão */
+            overflow-y: hidden;
             padding: 0 5%;
             position: relative;
         }
 
-        /* O texto em si */
+        /* Guia visual de leitura (A faixa no meio da tela) */
+        .guia-leitura {
+            position: absolute;
+            top: 45%;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.03) 50%, rgba(0,0,0,0) 100%);
+            border-top: 1px dashed rgba(0,0,0,0.15);
+            border-bottom: 1px dashed rgba(0,0,0,0.15);
+            pointer-events: none; /* Para o clique passar direto por ela */
+            z-index: 10;
+        }
+
         #texto-rolante {
-            white-space: pre-wrap; /* Mantém as quebras de linha que você digitou */
+            white-space: pre-wrap;
             text-align: center;
-            font-weight: bold;
-            line-height: 1.5;
-            padding-top: 50vh;    /* Começa no meio da tela */
-            padding-bottom: 100vh; /* Espaço vazio no final para rolar até sumir */
+            font-weight: 700;
+            line-height: 1.6;
+            padding-top: 55vh;
+            padding-bottom: 100vh;
             margin: 0;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.8); /* Sombra clara para manter a suavidade */
         }
 
         /* ========================================================
-           4. BARRA DE CONTROLES (Rodapé do Teleprompter)
+           4. BARRA DE CONTROLES
            ========================================================
         */
         #controles-prompter {
-            background-color: rgba(30, 41, 59, 0.95); /* Fundo escuro levemente transparente */
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             padding: 15px 20px;
             display: flex;
-            flex-wrap: wrap; /* Permite quebrar linha no celular */
+            flex-wrap: wrap;
             gap: 20px;
             justify-content: space-between;
             align-items: center;
-            border-top: 2px solid #334155;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 20;
         }
 
         .grupo-controle {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: white;
-            font-size: 1rem;
+            gap: 12px;
+            color: #e2e8f0;
+            font-weight: 700;
         }
 
-        /* Estilo dos sliders (barrinhas de arrastar) */
+        /* Sliders bonitões */
         input[type="range"] {
+            -webkit-appearance: none;
+            width: 130px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f472b6; /* Rosa vibrante */
             cursor: pointer;
-            width: 120px;
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
         }
 
-        /* Botões de controle (Pausar, Voltar) */
         .btn-controle {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 900;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             color: white;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
+        .btn-controle:hover { transform: scale(1.05); }
+        .btn-pausar { background: var(--cor-botao-pause); color: #451a03; }
+        .btn-parar { background: var(--cor-botao-parar); }
+        .btn-play { background: var(--cor-botao-play); }
 
-        .btn-pausar { background-color: var(--cor-botao-pause); color: black; }
-        .btn-parar { background-color: var(--cor-botao-parar); }
-        .btn-play { background-color: var(--cor-botao-play); }
-
-        /* Deixa os botões menores em telas de celular */
         @media (max-width: 600px) {
             #controles-prompter { justify-content: center; }
+            .cartao-configuracao { padding: 20px; }
+            h1 { font-size: 2rem; }
             input[type="range"] { width: 90px; }
-            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -186,13 +260,17 @@
          INTERFACE 1: TELA DE CONFIGURAÇÃO 
          ========================================== -->
     <div id="tela-configuracao">
-        <h1>🎤 Teleprompter Musical</h1>
-        <p style="text-align: center; color: #64748b;">Cole a letra da música abaixo e clique em Iniciar.</p>
-        
-        <!-- Onde você digita o texto -->
-        <textarea id="entrada-texto" placeholder="Digite ou cole a letra da música aqui...&#10;&#10;Exemplo:&#10;Alecrim, alecrim dourado&#10;Que nasceu no campo&#10;Sem ser semeado..."></textarea>
-        
-        <button class="btn-iniciar" id="btn-iniciar">Iniciar Teleprompter ▶</button>
+        <div class="cartao-configuracao">
+            <h1>🎤 Teleprompter Musical</h1>
+            <p style="font-size: 1.1rem; margin-bottom: 25px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+                Cole a letra da música abaixo e clique em Iniciar.
+            </p>
+            
+            <!-- Onde você digita o texto -->
+            <textarea id="entrada-texto" placeholder="🎶 Digite ou cole a letra da música aqui...&#10;&#10;Exemplo:&#10;Alecrim, alecrim dourado&#10;Que nasceu no campo&#10;Sem ser semeado..."></textarea>
+            
+            <button class="btn-iniciar" id="btn-iniciar">🎵 Iniciar Teleprompter ▶</button>
+        </div>
     </div>
 
     <!-- ==========================================
@@ -202,6 +280,9 @@
         
         <!-- Área visível do texto -->
         <div id="area-texto">
+            <!-- Guia Visual de Leitura (Linha que marca o meio da tela) -->
+            <div class="guia-leitura"></div>
+            
             <div id="texto-rolante"></div>
         </div>
 
