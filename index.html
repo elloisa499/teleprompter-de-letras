@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teleprompter Musical</title>
+    
+    <!-- Ícone da aba do navegador (Favicon) usando um Emoji de microfone em SVG -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎤</text></svg>">
+
+    <style>
+        /* ========================================================
+           1. CORES E ESTILOS GERAIS (Fácil de mudar!)
+           Aqui você pode mudar as cores do aplicativo. 
+           ========================================================
+        */
+        :root {
+            --cor-fundo: #f0fdf4;       /* Verde bem clarinho para a tela inicial */
+            --cor-texto: #1e293b;       /* Cor do texto principal */
+            --cor-botao-play: #22c55e;  /* Verde para o botão iniciar */
+            --cor-botao-pause: #eab308; /* Amarelo para pausar */
+            --cor-botao-parar: #ef4444; /* Vermelho para parar/voltar */
+            
+            /* Cores da tela de rolagem (Teleprompter) */
+            --cor-fundo-prompter: #000000; /* Fundo preto para não ofuscar a visão */
+            --cor-texto-prompter: #ffffff; /* Texto branco para dar contraste */
+        }
+
+        /* Configuração básica da página */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ========================================================
+           2. TELA DE CONFIGURAÇÃO (Onde você cola a letra)
+           ========================================================
+        */
+        #tela-configuracao {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto; /* Centraliza na tela */
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--cor-texto);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Caixa de texto para digitar a letra */
+        textarea {
+            width: 100%;
+            height: 40vh;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            font-family: inherit;
+        }
+
+        /* Botão grande e bonito para iniciar */
+        .btn-iniciar {
+            background-color: var(--cor-botao-play);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-iniciar:hover {
+            background-color: #16a34a; /* Verde mais escuro ao passar o mouse */
+            transform: translateY(-2px); /* Efeito de levitar */
+        }
+
+        /* ========================================================
+           3. TELA DO TELEPROMPTER (Onde a mágica acontece)
+           ========================================================
+        */
+        #tela-prompter {
+            display: none; /* Escondido por padrão, aparece quando clica em Iniciar */
+            background-color: var(--cor-fundo-prompter);
+            color: var(--cor-texto-prompter);
+            position: fixed; /* Ocupa a tela toda */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Área onde o texto realmente rola */
+        #area-texto {
+            flex-grow: 1;
+            overflow-y: hidden; /* Esconde a barra de rolagem padrão */
+            padding: 0 5%;
+            position: relative;
+        }
+
+        /* O texto em si */
+        #texto-rolante {
+            white-space: pre-wrap; /* Mantém as quebras de linha que você digitou */
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+            padding-top: 50vh;    /* Começa no meio da tela */
+            padding-bottom: 100vh; /* Espaço vazio no final para rolar até sumir */
+            margin: 0;
+        }
+
+        /* ========================================================
+           4. BARRA DE CONTROLES (Rodapé do Teleprompter)
+           ========================================================
+        */
+        #controles-prompter {
+            background-color: rgba(30, 41, 59, 0.95); /* Fundo escuro levemente transparente */
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap; /* Permite quebrar linha no celular */
+            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #334155;
+        }
+
+        .grupo-controle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Estilo dos sliders (barrinhas de arrastar) */
+        input[type="range"] {
+            cursor: pointer;
+            width: 120px;
+        }
+
+        /* Botões de controle (Pausar, Voltar) */
+        .btn-controle {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-pausar { background-color: var(--cor-botao-pause); color: black; }
+        .btn-parar { background-color: var(--cor-botao-parar); }
+        .btn-play { background-color: var(--cor-botao-play); }
+
+        /* Deixa os botões menores em telas de celular */
+        @media (max-width: 600px) {
+            #controles-prompter { justify-content: center; }
+            input[type="range"] { width: 90px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         INTERFACE 1: TELA DE CONFIGURAÇÃO 
+         ========================================== -->
+    <div id="tela-configuracao">
+        <h1>🎤 Teleprompter Musical</h1>
+        <p style="text-align: center; color: #64748b;">Cole a letra da música abaixo e clique em Iniciar.</p>
+        
+        <!-- Onde você digita o texto -->
+        <textarea id="entrada-texto" placeholder="Digite ou cole a letra da música aqui...&#10;&#10;Exemplo:&#10;Alecrim, alecrim dourado&#10;Que nasceu no campo&#10;Sem ser semeado..."></textarea>
+        
+        <button class="btn-iniciar" id="btn-iniciar">Iniciar Teleprompter ▶</button>
+    </div>
+
+    <!-- ==========================================
+         INTERFACE 2: TELA DO TELEPROMPTER 
+         ========================================== -->
+    <div id="tela-prompter">
+        
+        <!-- Área visível do texto -->
+        <div id="area-texto">
+            <div id="texto-rolante"></div>
+        </div>
+
+        <!-- Barra inferior com controles -->
+        <div id="controles-prompter">
+            
+            <!-- Controle de Tamanho da Fonte -->
+            <div class="grupo-controle">
+                <label for="controle-tamanho">Tamanho:</label>
+                <input type="range" id="controle-tamanho" min="30" max="120" value="60">
+            </div>
+
+            <!-- Botões Centrais -->
+            <div class="grupo-controle">
+                <button class="btn-controle btn-pausar" id="btn-play-pause">Pausar ⏸</button>
+                <button class="btn-controle btn-parar" id="btn-voltar">Voltar ⏹</button>
+            </div>
+
+            <!-- Controle de Velocidade -->
+            <div class="grupo-controle">
+                <label for="controle-velocidade">Velocidade:</label>
+                <input type="range" id="controle-velocidade" min="1" max="50" value="15">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT (O cérebro do aplicativo)
+         ========================================== -->
+    <script>
+        // 1. Pegando as partes do HTML para o JavaScript conseguir modificar
+        const telaConfiguracao = document.getElementById('tela-configuracao');
+        const telaPrompter = document.getElementById('tela-prompter');
+        const entradaTexto = document.getElementById('entrada-texto');
+        const textoRolante = document.getElementById('texto-rolante');
+        const areaTexto = document.getElementById('area-texto');
+        
+        const btnIniciar = document.getElementById('btn-iniciar');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const btnVoltar = document.getElementById('btn-voltar');
+        
+        const controleTamanho = document.getElementById('controle-tamanho');
+        const controleVelocidade = document.getElementById('controle-velocidade');
+
+        // 2. Variáveis de controle interno
+        let rodando = false;        // Diz se o texto está rolando ou pausado
+        let idAnimacao = null;      // Guarda o ID da animação para podermos parar depois
+        let posicaoRolagem = 0;     // Guarda onde o texto está no momento
+        
+        // 3. Função principal que faz o texto subir
+        function rolarTexto() {
+            if (rodando) {
+                // Pega a velocidade do slider e transforma em um número pequeno
+                const velocidade = controleVelocidade.value / 10; 
+                
+                // Aumenta a posição
+                posicaoRolagem += velocidade;
+                
+                // Move a barra de rolagem da área de texto
+                areaTexto.scrollTop = posicaoRolagem;
+            }
+            
+            // Pede para o navegador repetir essa função no próximo "quadro" da tela
+            // Isso cria a animação suave!
+            idAnimacao = requestAnimationFrame(rolarTexto);
+        }
+
+        // 4. Quando clicar no botão "Iniciar Teleprompter"
+        btnIniciar.addEventListener('click', () => {
+            // Pega o texto que você digitou e coloca na tela escura
+            const texto = entradaTexto.value.trim();
+            if (texto === "") {
+                alert("Por favor, cole alguma letra de música antes de iniciar!");
+                return;
+            }
+            
+            textoRolante.textContent = texto; // Coloca o texto
+            textoRolante.style.fontSize = controleTamanho.value + 'px'; // Aplica o tamanho
+
+            // Troca as telas (esconde a de configuração, mostra o prompter)
+            telaConfiguracao.style.display = 'none';
+            telaPrompter.style.display = 'flex';
+
+            // Zera a posição e inicia
+            posicaoRolagem = 0;
+            areaTexto.scrollTop = 0;
+            rodando = true;
+            btnPlayPause.textContent = "Pausar ⏸";
+            btnPlayPause.className = "btn-controle btn-pausar";
+            
+            // Inicia o motor de animação
+            rolarTexto();
+        });
+
+        // 5. Quando clicar no botão de "Pausar / Continuar"
+        btnPlayPause.addEventListener('click', () => {
+            rodando = !rodando; // Inverte o status (se for true vira false, e vice versa)
+            
+            if (rodando) {
+                btnPlayPause.textContent = "Pausar ⏸";
+                btnPlayPause.className = "btn-controle btn-pausar";
+            } else {
+                btnPlayPause.textContent = "Continuar ▶";
+                btnPlayPause.className = "btn-controle btn-play";
+            }
+        });
+
+        // 6. Quando clicar no botão "Voltar"
+        btnVoltar.addEventListener('click', () => {
+            // Para a animação
+            rodando = false;
+            cancelAnimationFrame(idAnimacao);
+            
+            // Troca as telas de volta
+            telaPrompter.style.display = 'none';
+            telaConfiguracao.style.display = 'flex';
+        });
+
+        // 7. Quando você mexer na barrinha de Tamanho do Texto, muda na hora!
+        controleTamanho.addEventListener('input', () => {
+            textoRolante.style.fontSize = controleTamanho.value + 'px';
+        });
+
+    </script>
+</body>
+</html>
